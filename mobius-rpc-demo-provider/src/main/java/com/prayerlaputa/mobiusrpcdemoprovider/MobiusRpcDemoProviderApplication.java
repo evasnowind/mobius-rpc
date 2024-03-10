@@ -1,0 +1,52 @@
+package com.prayerlaputa.mobiusrpcdemoprovider;
+
+import com.prayerlaputa.mobiusrpccore.api.RpcRequest;
+import com.prayerlaputa.mobiusrpccore.api.RpcResponse;
+import com.prayerlaputa.mobiusrpccore.provider.ProviderBootstrap;
+import com.prayerlaputa.mobiusrpccore.provider.ProviderConfig;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.ApplicationRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@SpringBootApplication
+@RestController
+@Import({ProviderConfig.class})
+public class MobiusRpcDemoProviderApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(MobiusRpcDemoProviderApplication.class, args);
+    }
+
+    // 使用HTTP + JSON 来实现序列化和通信
+
+    @Autowired
+    ProviderBootstrap providerBootstrap;
+
+    @RequestMapping("/")
+    public RpcResponse invoke(@RequestBody RpcRequest request) {
+        return providerBootstrap.invoke(request);
+    }
+
+
+    @Bean
+    ApplicationRunner providerRun() {
+        return x -> {
+            RpcRequest request = new RpcRequest();
+            request.setService("com.prayerlaputa.mobiusrpc.demo.api.UserService");
+            request.setMethod("findById");
+            request.setArgs(new Object[]{100});
+
+            RpcResponse rpcResponse = invoke(request);
+            System.out.println("return : "+rpcResponse.getData());
+
+        };
+    }
+
+
+}
