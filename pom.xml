@@ -20,6 +20,8 @@
 
     <modules>
         <module>mobius-rpc-core</module>
+        <module>mobius-rpc-demo-provider</module>
+        <module>mobius-rpc-demo-api</module>
     </modules>
 
 </project>
