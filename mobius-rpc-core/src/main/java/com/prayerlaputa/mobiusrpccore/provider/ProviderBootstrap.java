@@ -15,7 +15,6 @@ import org.springframework.util.MultiValueMap;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -97,7 +96,9 @@ public class ProviderBootstrap implements ApplicationContextAware {
 //    }
 
     private Object[] processArgs(Object[] args, Class<?>[] parameterTypes) {
-        if(args.length == 0) return args;
+        if(args == null || args.length == 0) {
+            return args;
+        }
         Object[] actuals = new Object[args.length];
         for (int i = 0; i < args.length; i++) {
 //            if(args[i] instanceof JSONObject jsonObject) {

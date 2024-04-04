@@ -6,9 +6,15 @@ public interface UserService {
 
 //    User findById(long id);
 
-    int getId(int id);
+    long getId(long id);
 
-    int getId(User user);
+    long getId(User user);
+
+    int[] getIds();
+
+    int[] getIds(int[] ids);
+
+    long[] getLongIds();
 
     String getName();
 

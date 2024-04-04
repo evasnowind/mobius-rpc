@@ -1,16 +1,18 @@
 package com.prayerlaputa.mobiusrpccore.consumer;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.prayerlaputa.mobiusrpccore.api.RpcRequest;
 import com.prayerlaputa.mobiusrpccore.api.RpcResponse;
 import com.prayerlaputa.mobiusrpccore.util.MethodUtils;
+import com.prayerlaputa.mobiusrpccore.util.TypeUtils;
 import okhttp3.*;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class MobiusInvocationHandler implements InvocationHandler {
@@ -38,11 +40,20 @@ public class MobiusInvocationHandler implements InvocationHandler {
         RpcResponse rpcResponse = post(rpcRequest);
         if (rpcResponse.isStatus()) {
             // 处理基本类型
-            if (rpcResponse.getData() instanceof JSONObject) {
-                JSONObject jsonResult = (JSONObject) rpcResponse.getData();
+            Object data = rpcResponse.getData();
+            if (data instanceof JSONObject) {
+                JSONObject jsonResult = (JSONObject) data;
                 return jsonResult.toJavaObject(method.getReturnType());
+            } else if (data instanceof JSONArray jsonArray) {
+                Object[] array = jsonArray.toArray();
+                Class<?> componentType = method.getReturnType().getComponentType();
+                Object resultArray = Array.newInstance(componentType, array.length);
+                for (int i = 0; i < array.length; i++) {
+                    Array.set(resultArray, i, array[i]);
+                }
+                return resultArray;
             } else {
-                return rpcResponse.getData();
+                return TypeUtils.cast(data, method.getReturnType());
             }
         } else {
             //            ex.printStackTrace();

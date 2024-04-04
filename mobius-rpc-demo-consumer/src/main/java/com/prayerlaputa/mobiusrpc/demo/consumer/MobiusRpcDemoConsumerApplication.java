@@ -1,8 +1,6 @@
 package com.prayerlaputa.mobiusrpc.demo.consumer;
 
 import com.prayerlaputa.mobiusrpc.demo.api.OrderService;
-import com.prayerlaputa.mobiusrpc.demo.api.User;
-import com.prayerlaputa.mobiusrpc.demo.api.Order;
 import com.prayerlaputa.mobiusrpc.demo.api.UserService;
 import com.prayerlaputa.mobiusrpccore.annotation.MobiusConsumer;
 import com.prayerlaputa.mobiusrpccore.consumer.ConsumerConfig;
@@ -12,6 +10,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+
+import java.util.Arrays;
 
 @SpringBootApplication
 @Import({ConsumerConfig.class})
@@ -54,9 +54,23 @@ public class MobiusRpcDemoConsumerApplication {
 //            System.out.println(userService.toString());
 
             // 测试方法名重载
-            System.out.println("RPC result userService.findById() = " + userService.findById(1, "test"));
-            System.out.println("RPC result userService.getName() = " + userService.getId(144));
-            System.out.println("RPC result userService.getName() = " + userService.getId(new User(123, "tmpObj")));
+//            System.out.println("RPC result userService.findById() = " + userService.findById(1, "test"));
+//            System.out.println("RPC result userService.getName() = " + userService.getId(144));
+//            System.out.println("RPC result userService.getName() = " + userService.getId(new User(123, "tmpObj")));
+
+            // 不同类型参数的支持
+//            System.out.println("RPC result userService.getId() = " + userService.getId(144L));
+//            System.out.println("RPC result userService.getId() = " + userService.getId(new User(555, "test3")));
+            System.out.println("RPC result userService.getIds() = " + Arrays.toString(userService.getIds()));
+            System.out.println(" ===> userService.getLongIds()");
+            for (long id : userService.getLongIds()) {
+                System.out.println(id);
+            }
+
+            System.out.println(" ===> userService.getLongIds()");
+            for (long id : userService.getIds(new int[]{4,5,6})) {
+                System.out.println(id);
+            }
         };
     }
 }
