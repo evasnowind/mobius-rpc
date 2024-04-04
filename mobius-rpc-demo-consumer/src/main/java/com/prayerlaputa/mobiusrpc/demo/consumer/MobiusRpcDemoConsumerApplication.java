@@ -1,6 +1,7 @@
 package com.prayerlaputa.mobiusrpc.demo.consumer;
 
 import com.prayerlaputa.mobiusrpc.demo.api.OrderService;
+import com.prayerlaputa.mobiusrpc.demo.api.User;
 import com.prayerlaputa.mobiusrpc.demo.api.UserService;
 import com.prayerlaputa.mobiusrpccore.annotation.MobiusConsumer;
 import com.prayerlaputa.mobiusrpccore.consumer.ConsumerConfig;
@@ -12,6 +13,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @SpringBootApplication
 @Import({ConsumerConfig.class})
@@ -71,6 +75,20 @@ public class MobiusRpcDemoConsumerApplication {
             for (long id : userService.getIds(new int[]{4,5,6})) {
                 System.out.println(id);
             }
+
+            // 测试参数和返回值都是List类型
+            List<User> list = userService.getList(List.of(
+                    new User(100, "test100"),
+                    new User(101, "test101")));
+            list.forEach(System.out::println);
+
+            // 测试参数和返回值都是Map类型
+            Map<String, User> map = new HashMap<>();
+            map.put("A200", new User(200, "test200"));
+            map.put("A201", new User(201, "test201"));
+            userService.getMap(map).forEach(
+                    (k,v) -> System.out.println(k + " -> " + v)
+            );
         };
     }
 }

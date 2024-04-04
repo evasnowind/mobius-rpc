@@ -6,6 +6,9 @@ import com.prayerlaputa.mobiusrpc.demo.api.User;
 import com.prayerlaputa.mobiusrpc.demo.api.UserService;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.Map;
+
 @Component
 @MobiusProvider
 public class UserServiceImpl implements UserService {
@@ -54,4 +57,15 @@ public class UserServiceImpl implements UserService {
     public User findById(int id, String name) {
         return new User(id, "Mobius-" + name + "-" + System.currentTimeMillis());
     }
+
+    @Override
+    public List<User> getList(List<User> userList) {
+        return userList;
+    }
+
+    @Override
+    public Map<String, User> getMap(Map<String, User> userMap) {
+        return userMap;
+    }
+
 }
