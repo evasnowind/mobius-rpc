@@ -9,6 +9,8 @@ public interface UserService {
 
 //    User findById(long id);
 
+    float getId(float id);
+
     long getId(long id);
 
     long getId(User user);
@@ -20,6 +22,8 @@ public interface UserService {
     long[] getLongIds();
 
     String getName();
+
+    String getName(int id);
 
     User findById(int id, String name);
 

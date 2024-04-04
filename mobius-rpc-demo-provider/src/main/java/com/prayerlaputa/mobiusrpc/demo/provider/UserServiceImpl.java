@@ -23,6 +23,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public float getId(float id) {
+        return id;
+    }
+
+    @Override
     public long getId(long id) {
         return id;
     }
@@ -51,6 +56,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public String getName() {
         return "name";
+    }
+
+    @Override
+    public String getName(int id) {
+        return "name-" + id;
     }
 
     @Override
