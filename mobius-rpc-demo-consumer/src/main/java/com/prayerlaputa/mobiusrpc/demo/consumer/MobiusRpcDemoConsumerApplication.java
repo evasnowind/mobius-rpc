@@ -128,6 +128,13 @@ public class MobiusRpcDemoConsumerApplication {
             userService.getMap(map).forEach(
                     (k,v) -> System.out.println(k + " -> " + v)
             );
+
+            // 添加boolean类型支持
+            System.out.println("Case 13. >>===[测试参数和返回值都是Boolean/boolean类型]===");
+            System.out.println("userService.getFlag(false) = " + userService.getFlag(false));
+
+
+
         };
     }
 }
