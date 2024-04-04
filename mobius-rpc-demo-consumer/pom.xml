@@ -5,11 +5,10 @@
     <parent>
         <groupId>com.prayerlaputa</groupId>
         <artifactId>mobius-rpc</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <version>0.0.1-SNAPSHOT</version><!-- lookup parent from repository -->
     </parent>
 
-    <artifactId>mobius-rpc-consumer</artifactId>
+    <artifactId>mobius-rpc-demo-consumer</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>mobius-rpc-consumer</name>
     <description>mobius-rpc-consumer</description>
@@ -32,6 +31,20 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>com.prayerlaputa</groupId>
+            <artifactId>mobius-rpc-core</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.prayerlaputa</groupId>
+            <artifactId>mobius-rpc-demo-api</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
     </dependencies>
 
     <build>

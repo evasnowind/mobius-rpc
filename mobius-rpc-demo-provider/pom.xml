@@ -5,8 +5,7 @@
     <parent>
         <groupId>com.prayerlaputa</groupId>
         <artifactId>mobius-rpc</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <version>0.0.1-SNAPSHOT</version><!-- lookup parent from repository -->
     </parent>
     <groupId>com.prayerlaputa</groupId>
     <artifactId>mobius-rpc-demo-provider</artifactId>

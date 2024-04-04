@@ -1,4 +1,4 @@
-package com.prayerlaputa.mobiusrpcdemoprovider;
+package com.prayerlaputa.mobiusrpc.demo.provider;
 
 
 import com.prayerlaputa.mobiusrpccore.annotation.MobiusProvider;
@@ -17,5 +17,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findById(int id) {
         return new User(id, "Mobius-" + System.currentTimeMillis());
+    }
+
+    @Override
+    public int getId(int id) {
+        return id;
+    }
+
+    @Override
+    public String getName() {
+        return "name";
     }
 }

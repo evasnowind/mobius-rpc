@@ -11,6 +11,7 @@ import org.springframework.context.ApplicationContextAware;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,7 +26,7 @@ public class ProviderBootstrap implements ApplicationContextAware {
     ApplicationContext applicationContext;
 
     private Map<String, Object> skeleton = new HashMap<>();
-
+    List<String> excludeMethodList = List.of("getClass","hashCode","equals","clone","toString","notify","notifyAll","wait");
 
     @PostConstruct  // init-method
     // PreDestroy
@@ -48,14 +49,32 @@ public class ProviderBootstrap implements ApplicationContextAware {
 
 
     public RpcResponse invoke(RpcRequest request) {
+        String methodName = request.getMethod();
+        if (excludeMethodList.contains(methodName)) {
+            // 解决userService实例调用toString等 方法时也调用服务端的问题。
+            return null;
+        }
+
+        RpcResponse rpcResponse = new RpcResponse();
         Object bean = skeleton.get(request.getService());
         try {
             Method method = findMethod(bean.getClass(), request.getMethod());
-            Object result = method.invoke(bean, request.getArgs());
-            return new RpcResponse(true, result);
-        } catch (InvocationTargetException | IllegalAccessException e) {
-            throw new RuntimeException(e);
+            Object result = null;
+            try {
+                result = method.invoke(bean, request.getArgs());
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+            rpcResponse.setStatus(true);
+            rpcResponse.setData(result);
+            return rpcResponse;
+        } catch (InvocationTargetException e) {
+            // 方案1：抛出详细信息  rpcResponse.setEx(e);
+//            rpcResponse.setEx(e);
+            // 方案2：抛出简要信息
+            rpcResponse.setEx(new RuntimeException(e.getTargetException().getMessage()));
         }
+        return rpcResponse;
     }
 
     private Method findMethod(Class<?> aClass, String methodName) {

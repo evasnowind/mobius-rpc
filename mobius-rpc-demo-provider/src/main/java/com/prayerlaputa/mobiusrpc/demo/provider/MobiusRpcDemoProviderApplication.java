@@ -1,4 +1,4 @@
-package com.prayerlaputa.mobiusrpcdemoprovider;
+package com.prayerlaputa.mobiusrpc.demo.provider;
 
 import com.prayerlaputa.mobiusrpccore.api.RpcRequest;
 import com.prayerlaputa.mobiusrpccore.api.RpcResponse;

@@ -6,4 +6,8 @@ public interface UserService {
 
 //    User findById(long id);
 
+    int getId(int id);
+
+    String getName();
+
 }
