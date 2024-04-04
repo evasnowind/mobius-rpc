@@ -31,22 +31,32 @@ public class MobiusRpcDemoConsumerApplication {
     @Bean
     public ApplicationRunner consumerRunner() {
         return x -> {
-            User user = userService.findById(1);
-            System.out.println("RPC result userService.findById(1) = " + user);
+            // 正常调用
+//            User user = userService.findById(1);
+//            System.out.println("RPC result userService.findById(1) = " + user);
 
-            Order order = orderService.findById(2);
-            System.out.println("RPC result orderService.findById(2) = " + order);
+//            Order order = orderService.findById(2);
+//            System.out.println("RPC result orderService.findById(2) = " + order);
 
             // 模拟异常场景
 //            order = orderService.findById(404);
 //            System.out.println("RPC result orderService.findById(404) = " + order);
 
-            demo2.test();
+            // 测试另一种写法
+//            demo2.test();
 
-            System.out.println("RPC result orderService.getId() = " + userService.getId(11));
+            // 测试基本数据类型：int
+//            System.out.println("RPC result orderService.getId() = " + userService.getId(11));
+            // 测试数据类型：String
+//            System.out.println("RPC result orderService.getName() = " + userService.getName());
 
-            System.out.println("RPC result orderService.getName() = " + userService.getName());
+            // 测试toString
 //            System.out.println(userService.toString());
+
+            // 测试方法名重载
+            System.out.println("RPC result userService.findById() = " + userService.findById(1, "test"));
+            System.out.println("RPC result userService.getName() = " + userService.getId(144));
+            System.out.println("RPC result userService.getName() = " + userService.getId(new User(123, "tmpObj")));
         };
     }
 }

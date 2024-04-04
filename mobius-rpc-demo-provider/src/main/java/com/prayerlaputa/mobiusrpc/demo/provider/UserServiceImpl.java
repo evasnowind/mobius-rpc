@@ -25,7 +25,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public int getId(User user) {
+        return user.getId();
+    }
+
+    @Override
     public String getName() {
         return "name";
+    }
+
+    @Override
+    public User findById(int id, String name) {
+        return new User(id, "Mobius-" + name + "-" + System.currentTimeMillis());
     }
 }

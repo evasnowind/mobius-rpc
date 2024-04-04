@@ -4,21 +4,18 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.prayerlaputa.mobiusrpccore.api.RpcRequest;
 import com.prayerlaputa.mobiusrpccore.api.RpcResponse;
-import lombok.val;
+import com.prayerlaputa.mobiusrpccore.util.MethodUtils;
 import okhttp3.*;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 public class MobiusInvocationHandler implements InvocationHandler {
 
     final static MediaType JSON_TYPE = MediaType.get("application/json; charset=utf-8");
-
-    List<String> excludeMethodList = List.of("getClass","hashCode","equals","clone","toString","notify","notifyAll","wait");
 
     Class<?> service;
 
@@ -28,15 +25,14 @@ public class MobiusInvocationHandler implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        String name = method.getName();
-        if (excludeMethodList.contains(name)) {
+        if (MethodUtils.checkLocalMethod(method.getName())) {
             // 解决userService实例调用toString等 方法时也调用服务端的问题。
            return null;
         }
 
         RpcRequest rpcRequest = new RpcRequest();
         rpcRequest.setService(service.getCanonicalName());
-        rpcRequest.setMethod(method.getName());
+        rpcRequest.setMethodSign(MethodUtils.methodSign(method));
         rpcRequest.setArgs(args);
 
         RpcResponse rpcResponse = post(rpcRequest);

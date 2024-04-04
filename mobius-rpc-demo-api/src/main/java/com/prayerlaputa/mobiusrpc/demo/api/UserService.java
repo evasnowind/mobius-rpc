@@ -8,6 +8,10 @@ public interface UserService {
 
     int getId(int id);
 
+    int getId(User user);
+
     String getName();
+
+    User findById(int id, String name);
 
 }

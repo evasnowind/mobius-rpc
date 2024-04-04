@@ -39,11 +39,21 @@ public class MobiusRpcDemoProviderApplication {
         return x -> {
             RpcRequest request = new RpcRequest();
             request.setService("com.prayerlaputa.mobiusrpc.demo.api.UserService");
-            request.setMethod("findById");
+            request.setMethodSign("findById@1_int");
             request.setArgs(new Object[]{100});
 
             RpcResponse rpcResponse = invoke(request);
             System.out.println("return : "+rpcResponse.getData());
+
+                        // test override method
+            request = new RpcRequest();
+            request.setService("com.prayerlaputa.mobiusrpc.demo.api.UserService");
+            request.setMethodSign("findById@2_int_java.lang.String");
+            request.setArgs(new Object[]{100, "test2"});
+
+            rpcResponse = invoke(request);
+            System.out.println("return : "+rpcResponse.getData());
+
 
         };
     }
