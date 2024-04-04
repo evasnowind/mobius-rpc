@@ -15,6 +15,7 @@ import org.springframework.util.MultiValueMap;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -46,15 +47,16 @@ public class ProviderBootstrap implements ApplicationContextAware {
     }
 
     private void genInterface(Object x) {
-        Class<?> interfaceClazz = x.getClass().getInterfaces()[0];
-        Method[] methods = interfaceClazz.getMethods();
-        for (Method method : methods) {
-            if(MethodUtils.checkLocalMethod(method)) {
-                // 解决userService实例调用toString等 方法时也调用服务端的问题。
-                continue;
-            }
-            createProviders(interfaceClazz, x, method);
-        }
+        Arrays.stream(x.getClass().getInterfaces()).forEach(
+                itfer -> {
+                    Method[] methods = itfer.getMethods();
+                    for (Method method : methods) {
+                        if (MethodUtils.checkLocalMethod(method)) {
+                            continue;
+                        }
+                        createProvider(itfer, x, method);
+                    }
+                });
     }
 
 
@@ -112,7 +114,7 @@ public class ProviderBootstrap implements ApplicationContextAware {
         return actuals;
     }
 
-    private void createProviders(Class<?> itfer, Object x, Method method) {
+    private void createProvider(Class<?> itfer, Object x, Method method) {
         ProviderMeta meta = new ProviderMeta();
         meta.setServiceImpl(x);
         meta.setMethod(method);
