@@ -1,13 +1,17 @@
 package com.prayerlaputa.mobiusrpccore.provider;
 
 import com.prayerlaputa.mobiusrpccore.annotation.MobiusProvider;
+import com.prayerlaputa.mobiusrpccore.api.RegistryCenter;
 import com.prayerlaputa.mobiusrpccore.api.RpcRequest;
 import com.prayerlaputa.mobiusrpccore.api.RpcResponse;
 import com.prayerlaputa.mobiusrpccore.meta.ProviderMeta;
 import com.prayerlaputa.mobiusrpccore.util.MethodUtils;
 import com.prayerlaputa.mobiusrpccore.util.TypeUtils;
 import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 import lombok.Data;
+import lombok.SneakyThrows;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.util.LinkedMultiValueMap;
@@ -15,6 +19,7 @@ import org.springframework.util.MultiValueMap;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.InetAddress;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -32,33 +37,30 @@ public class ProviderBootstrap implements ApplicationContextAware {
     ApplicationContext applicationContext;
 
     private MultiValueMap<String, ProviderMeta> skeleton = new LinkedMultiValueMap<>();
+    private String instance;
 
+    @Value("${server.port}")
+    private String port;
+
+    @SneakyThrows
     @PostConstruct  // init-method
-    // PreDestroy
-    public void start() {
+    public void init() {
         Map<String, Object> providers = applicationContext.getBeansWithAnnotation(MobiusProvider.class);
-        System.out.println("provider size=" + providers.size());
         providers.forEach((x,y) -> System.out.println(x));
-
-        providers.values().forEach(
-                x -> genInterface(x)
-        );
-
+        providers.values().forEach(x -> genInterface(x));
     }
 
-    private void genInterface(Object x) {
-        Arrays.stream(x.getClass().getInterfaces()).forEach(
-                itfer -> {
-                    Method[] methods = itfer.getMethods();
-                    for (Method method : methods) {
-                        if (MethodUtils.checkLocalMethod(method)) {
-                            continue;
-                        }
-                        createProvider(itfer, x, method);
-                    }
-                });
+    @SneakyThrows
+    public void start() {
+        String ip = InetAddress.getLocalHost().getHostAddress();
+        instance = ip + "_" + port;
+        skeleton.keySet().forEach(this::registerService);
     }
 
+    @PreDestroy
+    public void stop() {
+        skeleton.keySet().forEach(this::unregisterService);
+    }
 
     public RpcResponse invoke(RpcRequest request) {
 
@@ -126,5 +128,29 @@ public class ProviderBootstrap implements ApplicationContextAware {
     private ProviderMeta findProviderMeta(List<ProviderMeta> providerMetas, String methodSign) {
         Optional<ProviderMeta> optional = providerMetas.stream().filter(x -> x.getMethodSign().equals(methodSign)).findFirst();
         return optional.orElse(null);
+    }
+
+
+    private void registerService(String service) {
+        RegistryCenter rc = applicationContext.getBean(RegistryCenter.class);
+        rc.register(service, instance);
+    }
+
+    private void unregisterService(String service) {
+        RegistryCenter rc = applicationContext.getBean(RegistryCenter.class);
+        rc.unregister(service, instance);
+    }
+
+    private void genInterface(Object x) {
+        Arrays.stream(x.getClass().getInterfaces()).forEach(
+                itfer -> {
+                    Method[] methods = itfer.getMethods();
+                    for (Method method : methods) {
+                        if (MethodUtils.checkLocalMethod(method)) {
+                            continue;
+                        }
+                        createProvider(itfer, x, method);
+                    }
+                });
     }
 }

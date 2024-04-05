@@ -15,6 +15,9 @@ import java.util.List;
  *
  * avg * 0.3 + last * 0.7 = W* ~
  *
+ * 复杂情况需使用自适应负载均衡这种算法，可以参考EWMA算法 https://zhuanlan.zhihu.com/p/187459739
+ * dubbo 中有对应实现。
+ *
  * @create 2024/3/16 19:12
  */
 public interface LoadBalancer<T> {
