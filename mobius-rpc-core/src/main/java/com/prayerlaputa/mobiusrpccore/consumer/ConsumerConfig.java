@@ -1,5 +1,8 @@
 package com.prayerlaputa.mobiusrpccore.consumer;
 
+import com.prayerlaputa.mobiusrpccore.api.LoadBalancer;
+import com.prayerlaputa.mobiusrpccore.api.Router;
+import com.prayerlaputa.mobiusrpccore.cluster.RoundRibonLoadBalancer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
@@ -23,4 +26,16 @@ public class ConsumerConfig {
             System.out.println("consumer bootstrap started ...");
         };
     }
+
+    @Bean
+    public LoadBalancer loadBalancer() {
+        //return LoadBalancer.Default;
+        return new RoundRibonLoadBalancer();
+    }
+
+    @Bean
+    public Router router() {
+        return Router.Default;
+    }
+
 }

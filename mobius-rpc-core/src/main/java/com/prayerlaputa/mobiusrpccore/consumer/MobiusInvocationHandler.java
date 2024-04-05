@@ -3,8 +3,7 @@ package com.prayerlaputa.mobiusrpccore.consumer;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.prayerlaputa.mobiusrpccore.api.RpcRequest;
-import com.prayerlaputa.mobiusrpccore.api.RpcResponse;
+import com.prayerlaputa.mobiusrpccore.api.*;
 import com.prayerlaputa.mobiusrpccore.util.MethodUtils;
 import com.prayerlaputa.mobiusrpccore.util.TypeUtils;
 import okhttp3.*;
@@ -19,9 +18,13 @@ public class MobiusInvocationHandler implements InvocationHandler {
     final static MediaType JSON_TYPE = MediaType.get("application/json; charset=utf-8");
 
     Class<?> service;
+    RpcContext context;
+    List<String> providers;
 
-    public MobiusInvocationHandler(Class<?> clazz) {
+    public MobiusInvocationHandler(Class<?> clazz, RpcContext context, List<String> providers) {
         this.service = clazz;
+        this.context = context;
+        this.providers = providers;
     }
 
     @Override
@@ -36,7 +39,10 @@ public class MobiusInvocationHandler implements InvocationHandler {
         rpcRequest.setMethodSign(MethodUtils.methodSign(method));
         rpcRequest.setArgs(args);
 
-        RpcResponse rpcResponse = post(rpcRequest);
+        List<String> urls = context.getRouter().route(providers);
+        String url = (String) context.getLoadBalancer().choose(urls);
+        System.out.println("loadBalancer.choose(urls) ==> " + url);
+        RpcResponse rpcResponse = post(rpcRequest, url);
         if (rpcResponse.isStatus()) {
             Object data = rpcResponse.getData();
             Class<?> type = method.getReturnType();
@@ -104,11 +110,11 @@ public class MobiusInvocationHandler implements InvocationHandler {
             .connectTimeout(1, TimeUnit.SECONDS)
             .build();
 
-    private RpcResponse post(RpcRequest rpcRequest) {
+    private RpcResponse post(RpcRequest rpcRequest, String url) {
         String reqJson = JSON.toJSONString(rpcRequest);
         System.out.println("===> reqJson = " + reqJson);
         Request request = new Request.Builder()
-                .url("http://localhost:8080/")
+                .url(url)
                 .post(RequestBody.create(reqJson, JSON_TYPE))
                 .build();
         try {

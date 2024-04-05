@@ -4,6 +4,8 @@ package com.prayerlaputa.mobiusrpc.demo.provider;
 import com.prayerlaputa.mobiusrpccore.annotation.MobiusProvider;
 import com.prayerlaputa.mobiusrpc.demo.api.User;
 import com.prayerlaputa.mobiusrpc.demo.api.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -13,13 +15,18 @@ import java.util.Map;
 @MobiusProvider
 public class UserServiceImpl implements UserService {
 
+    @Autowired
+    Environment environment;
+
+
     public UserServiceImpl() {
         System.out.println("UserServiceImpl instantiated");
     }
 
     @Override
     public User findById(int id) {
-        return new User(id, "Mobius-" + System.currentTimeMillis());
+        return new User(id, "Mobius-" + environment.getProperty("server.port")
+                + "_" + System.currentTimeMillis());
     }
 
     @Override
