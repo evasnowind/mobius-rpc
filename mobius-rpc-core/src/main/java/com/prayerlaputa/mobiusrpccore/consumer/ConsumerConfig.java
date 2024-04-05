@@ -4,6 +4,7 @@ import com.prayerlaputa.mobiusrpccore.api.LoadBalancer;
 import com.prayerlaputa.mobiusrpccore.api.RegistryCenter;
 import com.prayerlaputa.mobiusrpccore.api.Router;
 import com.prayerlaputa.mobiusrpccore.cluster.RoundRibonLoadBalancer;
+import com.prayerlaputa.mobiusrpccore.registry.ZkRegistryCenter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationRunner;
@@ -47,7 +48,8 @@ public class ConsumerConfig {
 
     @Bean(initMethod = "start", destroyMethod = "stop")
     public RegistryCenter consumer_rc() {
-        return new RegistryCenter.StaticRegistryCenter(List.of(servers.split(",")));
+//        return new RegistryCenter.StaticRegistryCenter(List.of(servers.split(",")));
+        return new ZkRegistryCenter();
     }
 
 

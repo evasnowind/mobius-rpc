@@ -10,3 +10,9 @@ consumer获取初始化对象的方式
 
 consumer端一般叫stub
 provider端的对象一般叫skeleton
+
+## 使用zookeeper作为注册中心
+### 1、provider
+
+### 2、consumer
+- 需要监听下线事件，以及时更新本地可用节点的缓存。
