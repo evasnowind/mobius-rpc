@@ -2,6 +2,7 @@ package com.prayerlaputa.mobiusrpccore.consumer;
 
 import com.prayerlaputa.mobiusrpccore.annotation.MobiusConsumer;
 import com.prayerlaputa.mobiusrpccore.api.LoadBalancer;
+import com.prayerlaputa.mobiusrpccore.api.RegistryCenter;
 import com.prayerlaputa.mobiusrpccore.api.Router;
 import com.prayerlaputa.mobiusrpccore.api.RpcContext;
 import lombok.Data;
@@ -27,16 +28,11 @@ public class ConsumerBootstrap implements ApplicationContextAware, EnvironmentAw
     public void start() {
         Router router = applicationContext.getBean(Router.class);
         LoadBalancer loadBalancer = applicationContext.getBean(LoadBalancer.class);
+        RegistryCenter rc = applicationContext.getBean(RegistryCenter.class);
 
         RpcContext context = new RpcContext();
         context.setRouter(router);
         context.setLoadBalancer(loadBalancer);
-
-        String urls = environment.getProperty("mobius-rpc.providers", "");
-        if(Strings.isEmpty(urls)) {
-            System.out.println("mobius-rpc.providers is empty.");
-        }
-        String[] providers = urls.split(",");
 
         String[] names = applicationContext.getBeanDefinitionNames();
         for(String name : names) {
@@ -49,7 +45,7 @@ public class ConsumerBootstrap implements ApplicationContextAware, EnvironmentAw
                         String serviceName = service.getCanonicalName();
                         Object consumer = stub.get(serviceName);
                         if (Objects.isNull(consumer)) {
-                            consumer = createConsumer(service, context, List.of(providers));
+                            consumer = createFromRegistry(service, context, rc);
                         }
                         f.setAccessible(true);
                 try {
@@ -59,6 +55,12 @@ public class ConsumerBootstrap implements ApplicationContextAware, EnvironmentAw
                 }
             });
         }
+    }
+
+    private Object createFromRegistry(Class<?> service, RpcContext context, RegistryCenter rc) {
+        String serviceName = service.getCanonicalName();
+        List<String> providers = rc.fetchAll(serviceName);
+        return createConsumer(service, context, providers);
     }
 
     private Object createConsumer(Class<?> service, RpcContext context, List<String> providers) {

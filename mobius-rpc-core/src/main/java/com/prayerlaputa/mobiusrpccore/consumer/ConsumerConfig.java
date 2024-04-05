@@ -1,16 +1,23 @@
 package com.prayerlaputa.mobiusrpccore.consumer;
 
 import com.prayerlaputa.mobiusrpccore.api.LoadBalancer;
+import com.prayerlaputa.mobiusrpccore.api.RegistryCenter;
 import com.prayerlaputa.mobiusrpccore.api.Router;
 import com.prayerlaputa.mobiusrpccore.cluster.RoundRibonLoadBalancer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 
+import java.util.List;
+
 @Configuration
 public class ConsumerConfig {
+
+    @Value("${mobius-rpc.providers}")
+    String servers;
 
     @Bean
     ConsumerBootstrap createConsumerBootstrap() {
@@ -37,5 +44,11 @@ public class ConsumerConfig {
     public Router router() {
         return Router.Default;
     }
+
+    @Bean(initMethod = "start", destroyMethod = "stop")
+    public RegistryCenter consumer_rc() {
+        return new RegistryCenter.StaticRegistryCenter(List.of(servers.split(",")));
+    }
+
 
 }
