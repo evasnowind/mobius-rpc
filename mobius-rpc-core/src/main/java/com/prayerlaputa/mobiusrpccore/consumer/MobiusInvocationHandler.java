@@ -74,7 +74,12 @@ public class MobiusInvocationHandler implements InvocationHandler {
                     Class<?> componentType = type.getComponentType();
                     Object resultArray = Array.newInstance(componentType, array.length);
                     for (int i = 0; i < array.length; i++) {
-                        Array.set(resultArray, i, array[i]);
+                        if (componentType.isPrimitive() || componentType.getPackageName().startsWith("java")) {
+                            Array.set(resultArray, i, array[i]);
+                        } else {
+                            Object castObject = TypeUtils.cast(array[i], componentType);
+                            Array.set(resultArray, i, castObject);
+                        }
                     }
                     return resultArray;
                 } else if (List.class.isAssignableFrom(type)) {
