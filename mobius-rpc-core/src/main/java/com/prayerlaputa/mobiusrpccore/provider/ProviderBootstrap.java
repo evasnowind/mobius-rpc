@@ -36,6 +36,8 @@ public class ProviderBootstrap implements ApplicationContextAware {
 
     ApplicationContext applicationContext;
 
+    RegistryCenter rc;
+
     private MultiValueMap<String, ProviderMeta> skeleton = new LinkedMultiValueMap<>();
     private String instance;
 
@@ -46,12 +48,14 @@ public class ProviderBootstrap implements ApplicationContextAware {
     @PostConstruct  // init-method
     public void init() {
         Map<String, Object> providers = applicationContext.getBeansWithAnnotation(MobiusProvider.class);
+        rc = applicationContext.getBean(RegistryCenter.class);
         providers.forEach((x,y) -> System.out.println(x));
         providers.values().forEach(x -> genInterface(x));
     }
 
     @SneakyThrows
     public void start() {
+        rc.start();
         String ip = InetAddress.getLocalHost().getHostAddress();
         instance = ip + "_" + port;
         skeleton.keySet().forEach(this::registerService);
@@ -60,6 +64,7 @@ public class ProviderBootstrap implements ApplicationContextAware {
     @PreDestroy
     public void stop() {
         skeleton.keySet().forEach(this::unregisterService);
+        rc.stop();
     }
 
     public RpcResponse invoke(RpcRequest request) {
@@ -132,12 +137,10 @@ public class ProviderBootstrap implements ApplicationContextAware {
 
 
     private void registerService(String service) {
-        RegistryCenter rc = applicationContext.getBean(RegistryCenter.class);
         rc.register(service, instance);
     }
 
     private void unregisterService(String service) {
-        RegistryCenter rc = applicationContext.getBean(RegistryCenter.class);
         rc.unregister(service, instance);
     }
 
