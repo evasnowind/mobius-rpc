@@ -14,9 +14,15 @@ import org.springframework.core.env.Environment;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Proxy;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * 消费者启动类.
+ */
 @Data
 public class ConsumerBootstrap implements ApplicationContextAware, EnvironmentAware {
 
