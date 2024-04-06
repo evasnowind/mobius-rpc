@@ -1,7 +1,7 @@
 package com.prayerlaputa.mobiusrpc.demo.provider;
 
 
-import com.prayerlaputa.mobiusrpccore.annotation.MobiusProvider;
+import com.prayerlaputa.mobiusrpc.core.annotation.MobiusProvider;
 import com.prayerlaputa.mobiusrpc.demo.api.User;
 import com.prayerlaputa.mobiusrpc.demo.api.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

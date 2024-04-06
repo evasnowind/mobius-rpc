@@ -2,7 +2,7 @@ package com.prayerlaputa.mobiusrpc.demo.consumer;
 
 import com.prayerlaputa.mobiusrpc.demo.api.User;
 import com.prayerlaputa.mobiusrpc.demo.api.UserService;
-import com.prayerlaputa.mobiusrpccore.annotation.MobiusConsumer;
+import com.prayerlaputa.mobiusrpc.core.annotation.MobiusConsumer;
 import org.springframework.stereotype.Component;
 
 @Component

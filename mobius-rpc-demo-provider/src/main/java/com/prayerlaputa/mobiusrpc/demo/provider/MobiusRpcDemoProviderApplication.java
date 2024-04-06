@@ -1,9 +1,9 @@
 package com.prayerlaputa.mobiusrpc.demo.provider;
 
-import com.prayerlaputa.mobiusrpccore.api.RpcRequest;
-import com.prayerlaputa.mobiusrpccore.api.RpcResponse;
-import com.prayerlaputa.mobiusrpccore.provider.ProviderConfig;
-import com.prayerlaputa.mobiusrpccore.provider.ProviderInvoker;
+import com.prayerlaputa.mobiusrpc.core.api.RpcRequest;
+import com.prayerlaputa.mobiusrpc.core.api.RpcResponse;
+import com.prayerlaputa.mobiusrpc.core.provider.ProviderConfig;
+import com.prayerlaputa.mobiusrpc.core.provider.ProviderInvoker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
