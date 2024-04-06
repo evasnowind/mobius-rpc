@@ -5,6 +5,7 @@ import com.prayerlaputa.mobiusrpccore.api.LoadBalancer;
 import com.prayerlaputa.mobiusrpccore.api.RegistryCenter;
 import com.prayerlaputa.mobiusrpccore.api.Router;
 import com.prayerlaputa.mobiusrpccore.api.RpcContext;
+import com.prayerlaputa.mobiusrpccore.util.MethodUtils;
 import lombok.Data;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.context.ApplicationContext;
@@ -38,7 +39,7 @@ public class ConsumerBootstrap implements ApplicationContextAware, EnvironmentAw
         String[] names = applicationContext.getBeanDefinitionNames();
         for(String name : names) {
             Object bean = applicationContext.getBean(name);
-            List<Field> fields = findAnnotatedField(bean.getClass());
+            List<Field> fields = MethodUtils.findAnnotatedField(bean.getClass(), MobiusConsumer.class);
             fields.forEach(
                     f -> {
                         System.out.println(" ===> " + f.getName());
@@ -82,22 +83,4 @@ public class ConsumerBootstrap implements ApplicationContextAware, EnvironmentAw
                 new Class[]{service}, new MobiusInvocationHandler(service, context, providers));
     }
 
-    private List<Field> findAnnotatedField(Class<?> aClass) {
-        List<Field> result = new ArrayList<>();
-        // 此处一开始拿到的aClass是CGLib增强后的类，此时的子类没有被MobiusConsumer注解修饰，因此起不到作用。
-
-        while(null != aClass) {
-
-            Field[] fields = aClass.getDeclaredFields();
-            for(Field f : fields) {
-                if (f.isAnnotationPresent(MobiusConsumer.class)) {
-                    result.add(f);
-                }
-            }
-            aClass = aClass.getSuperclass();
-        }
-
-
-        return result;
-    }
 }
