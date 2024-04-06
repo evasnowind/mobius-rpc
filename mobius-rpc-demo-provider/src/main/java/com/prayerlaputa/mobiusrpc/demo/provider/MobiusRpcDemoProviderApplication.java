@@ -2,8 +2,8 @@ package com.prayerlaputa.mobiusrpc.demo.provider;
 
 import com.prayerlaputa.mobiusrpccore.api.RpcRequest;
 import com.prayerlaputa.mobiusrpccore.api.RpcResponse;
-import com.prayerlaputa.mobiusrpccore.provider.ProviderBootstrap;
 import com.prayerlaputa.mobiusrpccore.provider.ProviderConfig;
+import com.prayerlaputa.mobiusrpccore.provider.ProviderInvoker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
@@ -26,11 +26,11 @@ public class MobiusRpcDemoProviderApplication {
     // 使用HTTP + JSON 来实现序列化和通信
 
     @Autowired
-    ProviderBootstrap providerBootstrap;
+    ProviderInvoker providerInvoker;
 
     @RequestMapping("/")
     public RpcResponse invoke(@RequestBody RpcRequest request) {
-        return providerBootstrap.invoke(request);
+        return providerInvoker.invoke(request);
     }
 
 
