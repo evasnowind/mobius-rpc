@@ -2,6 +2,7 @@ package com.prayerlaputa.mobiusrpc.core.provider;
 
 import com.prayerlaputa.mobiusrpc.core.api.RegistryCenter;
 import com.prayerlaputa.mobiusrpc.core.annotation.MobiusProvider;
+import com.prayerlaputa.mobiusrpc.core.meta.InstanceMeta;
 import com.prayerlaputa.mobiusrpc.core.meta.ProviderMeta;
 import com.prayerlaputa.mobiusrpc.core.util.MethodUtils;
 import jakarta.annotation.PostConstruct;
@@ -33,7 +34,7 @@ public class ProviderBootstrap implements ApplicationContextAware {
     RegistryCenter rc;
 
     private MultiValueMap<String, ProviderMeta> skeleton = new LinkedMultiValueMap<>();
-    private String instance;
+    private InstanceMeta instance;
 
     @Value("${server.port}")
     private String port;
@@ -51,7 +52,7 @@ public class ProviderBootstrap implements ApplicationContextAware {
     public void start() {
         rc.start();
         String ip = InetAddress.getLocalHost().getHostAddress();
-        instance = ip + "_" + port;
+        instance = InstanceMeta.http(ip, Integer.valueOf(port));
         skeleton.keySet().forEach(this::registerService);
     }
 

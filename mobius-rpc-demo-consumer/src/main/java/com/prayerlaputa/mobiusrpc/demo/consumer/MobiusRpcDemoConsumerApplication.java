@@ -106,8 +106,8 @@ public class MobiusRpcDemoConsumerApplication {
 
             // 测试参数是User类型
             System.out.println("Case 8. >>===[测试参数是User类型]===");
-            System.out.println("userService.getId(new User(100,\"KK\")) = " +
-                    userService.getId(new User(100,"KK")));
+            System.out.println("userService.getId(new User(100,\"test\")) = " +
+                    userService.getId(new User(100,"test")));
 
 
             System.out.println("Case 9. >>===[测试返回long[]]===");
@@ -125,15 +125,15 @@ public class MobiusRpcDemoConsumerApplication {
             // 测试参数和返回值都是List类型
             System.out.println("Case 11. >>===[测试参数和返回值都是List类型]===");
             List<User> list = userService.getList(List.of(
-                    new User(100, "KK100"),
-                    new User(101, "KK101")));
+                    new User(100, "test100"),
+                    new User(101, "test101")));
             list.forEach(System.out::println);
 
             // 测试参数和返回值都是Map类型
             System.out.println("Case 12. >>===[测试参数和返回值都是Map类型]===");
             Map<String, User> map = new HashMap<>();
-            map.put("A200", new User(200, "KK200"));
-            map.put("A201", new User(201, "KK201"));
+            map.put("A200", new User(200, "test200"));
+            map.put("A201", new User(201, "test201"));
             userService.getMap(map).forEach(
                     (k,v) -> System.out.println(k + " -> " + v)
             );
@@ -144,8 +144,8 @@ public class MobiusRpcDemoConsumerApplication {
 
             System.out.println("Case 14. >>===[测试参数和返回值都是User[]类型]===");
             User[] users = new User[]{
-                    new User(100, "KK100"),
-                    new User(101, "KK101")};
+                    new User(100, "test100"),
+                    new User(101, "test101")};
             Arrays.stream(userService.findUsers(users)).forEach(System.out::println);
         };
     }

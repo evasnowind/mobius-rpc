@@ -1,5 +1,6 @@
 package com.prayerlaputa.mobiusrpc.core.registry;
 
+import com.prayerlaputa.mobiusrpc.core.meta.InstanceMeta;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -14,5 +15,5 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 public class Event {
-    List<String> data;
+    List<InstanceMeta> data;
 }

@@ -4,6 +4,7 @@ import com.prayerlaputa.mobiusrpc.core.api.RpcContext;
 import com.prayerlaputa.mobiusrpc.core.api.RpcRequest;
 import com.prayerlaputa.mobiusrpc.core.api.RpcResponse;
 import com.prayerlaputa.mobiusrpc.core.consumer.http.OkHttpInvoker;
+import com.prayerlaputa.mobiusrpc.core.meta.InstanceMeta;
 import com.prayerlaputa.mobiusrpc.core.util.MethodUtils;
 import com.prayerlaputa.mobiusrpc.core.util.TypeUtils;
 
@@ -15,11 +16,11 @@ public class MobiusInvocationHandler implements InvocationHandler {
 
     Class<?> service;
     RpcContext context;
-    List<String> providers;
+    List<InstanceMeta> providers;
 
     HttpInvoker httpInvoker = new OkHttpInvoker();
 
-    public MobiusInvocationHandler(Class<?> clazz, RpcContext context, List<String> providers) {
+    public MobiusInvocationHandler(Class<?> clazz, RpcContext context, List<InstanceMeta> providers) {
         this.service = clazz;
         this.context = context;
         this.providers = providers;
@@ -37,10 +38,12 @@ public class MobiusInvocationHandler implements InvocationHandler {
         rpcRequest.setMethodSign(MethodUtils.methodSign(method));
         rpcRequest.setArgs(args);
 
-        List<String> urls = context.getRouter().route(providers);
-        String url = (String) context.getLoadBalancer().choose(urls);
-        System.out.println("loadBalancer.choose(urls) ==> " + url);
-        RpcResponse<?> rpcResponse = httpInvoker.post(rpcRequest, url);
+        List<InstanceMeta> instances = context.getRouter().route(providers);
+        InstanceMeta instance = context.getLoadBalancer().choose(instances);
+
+        System.out.println("loadBalancer.choose(instances) ==> " + instance);
+
+        RpcResponse<?> rpcResponse = httpInvoker.post(rpcRequest, instance.toString());
         if (rpcResponse.isStatus()) {
             Object data = rpcResponse.getData();
             return TypeUtils.castMethodResult(method, data);
