@@ -12,6 +12,7 @@ import java.lang.reflect.Method;
  */
 
 @Data
+@Builder
 public class ProviderMeta {
 
     Method method;

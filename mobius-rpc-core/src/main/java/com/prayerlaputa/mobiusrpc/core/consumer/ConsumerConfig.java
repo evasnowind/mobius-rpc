@@ -4,6 +4,7 @@ import com.prayerlaputa.mobiusrpc.core.api.LoadBalancer;
 import com.prayerlaputa.mobiusrpc.core.api.RegistryCenter;
 import com.prayerlaputa.mobiusrpc.core.api.Router;
 import com.prayerlaputa.mobiusrpc.core.cluster.RoundRibonLoadBalancer;
+import com.prayerlaputa.mobiusrpc.core.meta.InstanceMeta;
 import com.prayerlaputa.mobiusrpc.core.registry.ZkRegistryCenter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,13 +35,13 @@ public class ConsumerConfig {
     }
 
     @Bean
-    public LoadBalancer loadBalancer() {
+    public LoadBalancer<InstanceMeta>  loadBalancer() {
         //return LoadBalancer.Default;
         return new RoundRibonLoadBalancer();
     }
 
     @Bean
-    public Router router() {
+    public Router<InstanceMeta>  router() {
         return Router.Default;
     }
 
