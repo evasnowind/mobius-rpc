@@ -4,6 +4,7 @@ import com.prayerlaputa.mobiusrpc.core.api.RegistryCenter;
 import com.prayerlaputa.mobiusrpc.core.annotation.MobiusProvider;
 import com.prayerlaputa.mobiusrpc.core.meta.InstanceMeta;
 import com.prayerlaputa.mobiusrpc.core.meta.ProviderMeta;
+import com.prayerlaputa.mobiusrpc.core.meta.ServiceMeta;
 import com.prayerlaputa.mobiusrpc.core.util.MethodUtils;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
@@ -39,6 +40,15 @@ public class ProviderBootstrap implements ApplicationContextAware {
     @Value("${server.port}")
     private String port;
 
+    @Value("${app.id}")
+    private String app;
+
+    @Value("${app.namespace}")
+    private String namespace;
+
+    @Value("${app.env}")
+    private String env;
+
     @SneakyThrows
     @PostConstruct  // init-method
     public void init() {
@@ -72,11 +82,23 @@ public class ProviderBootstrap implements ApplicationContextAware {
     }
 
     private void registerService(String service) {
-        rc.register(service, instance);
+        ServiceMeta serviceMeta = ServiceMeta.builder()
+                .app(app)
+                .namespace(namespace)
+                .env(env)
+                .name(service)
+                .build();
+        rc.register(serviceMeta, instance);
     }
 
     private void unregisterService(String service) {
-        rc.unregister(service, instance);
+        ServiceMeta serviceMeta = ServiceMeta.builder()
+                .app(app)
+                .namespace(namespace)
+                .env(env)
+                .name(service)
+                .build();
+        rc.unregister(serviceMeta, instance);
     }
 
     private void genInterface(Object x) {

@@ -2,6 +2,7 @@ package com.prayerlaputa.mobiusrpc.core.registry;
 
 import com.prayerlaputa.mobiusrpc.core.api.RegistryCenter;
 import com.prayerlaputa.mobiusrpc.core.meta.InstanceMeta;
+import com.prayerlaputa.mobiusrpc.core.meta.ServiceMeta;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.RetryPolicy;
@@ -10,6 +11,7 @@ import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.framework.recipes.cache.TreeCache;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.CreateMode;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,6 +25,13 @@ import java.util.stream.Collectors;
 @Slf4j
 public class ZkRegistryCenter  implements RegistryCenter {
 
+    @Value("${mobius-rpc.zkServer}")
+    String servers;
+
+    @Value("${mobius-rpc.zkRoot}")
+    String root;
+
+
     private CuratorFramework client = null;
     private TreeCache cache = null;
 
@@ -30,11 +39,11 @@ public class ZkRegistryCenter  implements RegistryCenter {
     public void start() {
         RetryPolicy retryPolicy = new ExponentialBackoffRetry(1000, 3);
         client = CuratorFrameworkFactory.builder()
-                .connectString("localhost:2181")
-                .namespace("mobius-rpc")
+                .connectString(servers)
+                .namespace(root)
                 .retryPolicy(retryPolicy)
                 .build();
-        System.out.println(" ===> zk client starting...");
+        System.out.println(" ===> zk client starting to server[" + servers + "/" + root + "].");
         client.start();
     }
 
@@ -48,7 +57,7 @@ public class ZkRegistryCenter  implements RegistryCenter {
     }
 
     @Override
-    public void register(String service, InstanceMeta instance) {
+    public void register(ServiceMeta service, InstanceMeta instance) {
         String servicePath = "/" + service;
         try {
             // 创建服务的持久化节点
@@ -65,7 +74,7 @@ public class ZkRegistryCenter  implements RegistryCenter {
     }
 
     @Override
-    public void unregister(String service, InstanceMeta instance) {
+    public void unregister(ServiceMeta service, InstanceMeta instance) {
         String servicePath = "/" + service;
         try {
             // 判断服务是否存在
@@ -82,7 +91,7 @@ public class ZkRegistryCenter  implements RegistryCenter {
     }
 
     @Override
-    public List<InstanceMeta> fetchAll(String service) {
+    public List<InstanceMeta> fetchAll(ServiceMeta service) {
         String servicePath = "/" + service;
         try {
             // 获取所有子节点
@@ -98,7 +107,7 @@ public class ZkRegistryCenter  implements RegistryCenter {
 
     @SneakyThrows
     @Override
-    public void subscribe(String service, ChangedListener listener) {
+    public void subscribe(ServiceMeta service, ChangedListener listener) {
         cache = TreeCache.newBuilder(client, "/"+service)
                 .setCacheData(true).setMaxDepth(2).build();
         cache.getListenable().addListener(

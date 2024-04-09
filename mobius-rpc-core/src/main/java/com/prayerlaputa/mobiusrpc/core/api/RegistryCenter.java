@@ -1,6 +1,7 @@
 package com.prayerlaputa.mobiusrpc.core.api;
 
 import com.prayerlaputa.mobiusrpc.core.meta.InstanceMeta;
+import com.prayerlaputa.mobiusrpc.core.meta.ServiceMeta;
 import com.prayerlaputa.mobiusrpc.core.registry.ChangedListener;
 
 import java.util.List;
@@ -17,12 +18,12 @@ public interface RegistryCenter {
     void stop(); // p/c
 
     // provider侧
-    void register(String service, InstanceMeta instance); // p
-    void unregister(String service, InstanceMeta instance); // p
+    void register(ServiceMeta service, InstanceMeta instance); // p
+    void unregister(ServiceMeta service, InstanceMeta instance); // p
 
     // consumer侧
-    List<InstanceMeta> fetchAll(String service); // c
-    void subscribe(String service, ChangedListener listener);
+    List<InstanceMeta> fetchAll(ServiceMeta service); // c
+    void subscribe(ServiceMeta service, ChangedListener listener);
     // void subscribe(); // c
     // void heartbeat();
 
@@ -44,22 +45,22 @@ public interface RegistryCenter {
         }
 
         @Override
-        public void register(String service, InstanceMeta instance) {
+        public void register(ServiceMeta service, InstanceMeta instance) {
 
         }
 
         @Override
-        public void unregister(String service, InstanceMeta instance) {
+        public void unregister(ServiceMeta service, InstanceMeta instance) {
 
         }
 
         @Override
-        public List<InstanceMeta> fetchAll(String service) {
+        public List<InstanceMeta> fetchAll(ServiceMeta service) {
             return providers;
         }
 
         @Override
-        public void subscribe(String service, ChangedListener listener) {
+        public void subscribe(ServiceMeta service, ChangedListener listener) {
 
         }
     }
