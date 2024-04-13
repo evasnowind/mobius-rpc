@@ -1,9 +1,11 @@
 package com.prayerlaputa.mobiusrpc.core.consumer;
 
+import com.prayerlaputa.mobiusrpc.core.api.Filter;
 import com.prayerlaputa.mobiusrpc.core.api.LoadBalancer;
 import com.prayerlaputa.mobiusrpc.core.api.RegistryCenter;
 import com.prayerlaputa.mobiusrpc.core.api.Router;
 import com.prayerlaputa.mobiusrpc.core.cluster.RoundRibonLoadBalancer;
+import com.prayerlaputa.mobiusrpc.core.filter.CacheFilter;
 import com.prayerlaputa.mobiusrpc.core.meta.InstanceMeta;
 import com.prayerlaputa.mobiusrpc.core.registry.ZkRegistryCenter;
 import lombok.extern.slf4j.Slf4j;
@@ -53,5 +55,9 @@ public class ConsumerConfig {
         return new ZkRegistryCenter();
     }
 
+    @Bean
+    public Filter filter() {
+        return new CacheFilter();
+    }
 
 }

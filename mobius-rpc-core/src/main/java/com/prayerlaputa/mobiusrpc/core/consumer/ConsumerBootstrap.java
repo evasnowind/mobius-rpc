@@ -1,10 +1,7 @@
 package com.prayerlaputa.mobiusrpc.core.consumer;
 
 import com.prayerlaputa.mobiusrpc.core.annotation.MobiusConsumer;
-import com.prayerlaputa.mobiusrpc.core.api.LoadBalancer;
-import com.prayerlaputa.mobiusrpc.core.api.RegistryCenter;
-import com.prayerlaputa.mobiusrpc.core.api.Router;
-import com.prayerlaputa.mobiusrpc.core.api.RpcContext;
+import com.prayerlaputa.mobiusrpc.core.api.*;
 import com.prayerlaputa.mobiusrpc.core.meta.InstanceMeta;
 import com.prayerlaputa.mobiusrpc.core.meta.ServiceMeta;
 import com.prayerlaputa.mobiusrpc.core.util.MethodUtils;
@@ -50,10 +47,12 @@ public class ConsumerBootstrap implements ApplicationContextAware, EnvironmentAw
         Router<InstanceMeta> router = applicationContext.getBean(Router.class);
         LoadBalancer<InstanceMeta> loadBalancer = applicationContext.getBean(LoadBalancer.class);
         RegistryCenter rc = applicationContext.getBean(RegistryCenter.class);
+        List<Filter> filters = applicationContext.getBeansOfType(Filter.class).values().stream().toList();
 
         RpcContext context = new RpcContext();
         context.setRouter(router);
         context.setLoadBalancer(loadBalancer);
+        context.setFilters(filters);
 
         String[] names = applicationContext.getBeanDefinitionNames();
         for(String name : names) {

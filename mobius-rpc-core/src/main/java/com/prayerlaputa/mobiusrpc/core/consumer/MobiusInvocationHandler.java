@@ -1,5 +1,6 @@
 package com.prayerlaputa.mobiusrpc.core.consumer;
 
+import com.prayerlaputa.mobiusrpc.core.api.Filter;
 import com.prayerlaputa.mobiusrpc.core.api.RpcContext;
 import com.prayerlaputa.mobiusrpc.core.api.RpcRequest;
 import com.prayerlaputa.mobiusrpc.core.api.RpcResponse;
@@ -40,17 +41,40 @@ public class MobiusInvocationHandler implements InvocationHandler {
         rpcRequest.setMethodSign(MethodUtils.methodSign(method));
         rpcRequest.setArgs(args);
 
+        for (Filter filter : this.context.getFilters()) {
+            Object preResult = filter.prefilter(rpcRequest);
+            if(preResult != null) {
+                log.debug(filter.getClass().getName() + " ==> prefilter: " + preResult);
+                return preResult;
+            }
+        }
+
         List<InstanceMeta> instances = context.getRouter().route(providers);
         InstanceMeta instance = context.getLoadBalancer().choose(instances);
 
         log.debug("loadBalancer.choose(instances) ==> " + instance);
 
         RpcResponse<?> rpcResponse = httpInvoker.post(rpcRequest, instance.toUrl());
+        Object result = castReturnResult(method, rpcResponse);
+
+        for (Filter filter : this.context.getFilters()) {
+            Object filterResult = filter.postfilter(rpcRequest, rpcResponse, result);
+            if(filterResult != null) {
+                return filterResult;
+            }
+        }
+
+        return result;
+    }
+
+
+    private static Object castReturnResult(Method method, RpcResponse<?> rpcResponse) {
         if (rpcResponse.isStatus()) {
             Object data = rpcResponse.getData();
             return TypeUtils.castMethodResult(method, data);
         } else {
-            throw new RuntimeException(rpcResponse.getEx());
+            Exception ex = rpcResponse.getEx();
+            throw new RuntimeException(ex);
         }
     }
 }
