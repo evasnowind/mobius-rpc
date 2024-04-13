@@ -43,7 +43,7 @@ public class MobiusRpcDemoConsumerApplication {
     @Bean
     public ApplicationRunner consumerRunner() {
         return x -> {
-//            testAll();
+            testAll();
         };
     }
 
