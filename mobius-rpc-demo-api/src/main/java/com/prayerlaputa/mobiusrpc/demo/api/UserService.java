@@ -7,6 +7,8 @@ public interface UserService {
 
     User findById(int id);
 
+    User findById(long id);
+
 //    User findById(long id);
 
     float getId(float id);
@@ -35,4 +37,5 @@ public interface UserService {
 
     Boolean getFlag(boolean flag);
 
+    User ex(boolean flag);
 }

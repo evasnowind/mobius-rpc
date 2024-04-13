@@ -30,6 +30,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User findById(long id) {
+        return new User(Long.valueOf(id).intValue(), "KK");
+    }
+
+    @Override
     public float getId(float id) {
         return id;
     }
@@ -95,4 +100,9 @@ public class UserServiceImpl implements UserService {
         return flag;
     }
 
+    @Override
+    public User ex(boolean flag) {
+        if(flag) throw new RuntimeException("just throw an exception");
+        return new User(100, "KK100");
+    }
 }
