@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 /**
  * @author:
- * @description:
+ * @description: zk 注册中心
  * @date: 2024/4/5 17:33
  * @version: 1.0
  */
@@ -43,13 +43,13 @@ public class ZkRegistryCenter  implements RegistryCenter {
                 .namespace(root)
                 .retryPolicy(retryPolicy)
                 .build();
-        System.out.println(" ===> zk client starting to server[" + servers + "/" + root + "].");
+        log.info(" ===> zk client starting to server[" + servers + "/" + root + "].");
         client.start();
     }
 
     @Override
     public void stop() {
-        System.out.println(" ===> zk client stopped...");
+        log.info(" ===> zk client stopped...");
         if (null != cache) {
             cache.close();
         }
@@ -66,7 +66,7 @@ public class ZkRegistryCenter  implements RegistryCenter {
             }
             // 创建实例的临时性节点
             String instancePath = servicePath + "/" + instance.toPath();
-            System.out.println(" ===> register to zk: " + instancePath);
+            log.info(" ===> register to zk: " + instancePath);
             client.create().withMode(CreateMode.EPHEMERAL).forPath(instancePath, "provider".getBytes());
         } catch (Exception ex) {
             throw new RuntimeException(ex);
@@ -83,7 +83,7 @@ public class ZkRegistryCenter  implements RegistryCenter {
             }
             // 删除实例节点
             String instancePath = servicePath + "/" + instance;
-            System.out.println(" ===> unregister to zk: " + instancePath);
+            log.info(" ===> unregister to zk: " + instancePath);
             client.delete().quietly().forPath(instancePath);
         } catch (Exception ex) {
             throw new RuntimeException(ex);
@@ -113,7 +113,7 @@ public class ZkRegistryCenter  implements RegistryCenter {
         cache.getListenable().addListener(
                 (curator, event) -> {
                     // 有任何节点变动这里会执行
-                    System.out.println("zk subscribe event: " + event);
+                    log.info("zk subscribe event: " + event);
                     List<InstanceMeta> nodes = fetchAll(service);
                     listener.fire(new Event(nodes));
                 }

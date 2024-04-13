@@ -7,11 +7,13 @@ import com.prayerlaputa.mobiusrpc.core.consumer.http.OkHttpInvoker;
 import com.prayerlaputa.mobiusrpc.core.meta.InstanceMeta;
 import com.prayerlaputa.mobiusrpc.core.util.MethodUtils;
 import com.prayerlaputa.mobiusrpc.core.util.TypeUtils;
+import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.List;
 
+@Slf4j
 public class MobiusInvocationHandler implements InvocationHandler {
 
     Class<?> service;
@@ -41,7 +43,7 @@ public class MobiusInvocationHandler implements InvocationHandler {
         List<InstanceMeta> instances = context.getRouter().route(providers);
         InstanceMeta instance = context.getLoadBalancer().choose(instances);
 
-        System.out.println("loadBalancer.choose(instances) ==> " + instance);
+        log.debug("loadBalancer.choose(instances) ==> " + instance);
 
         RpcResponse<?> rpcResponse = httpInvoker.post(rpcRequest, instance.toUrl());
         if (rpcResponse.isStatus()) {

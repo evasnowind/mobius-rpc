@@ -3,8 +3,10 @@ package com.prayerlaputa.mobiusrpc.demo.consumer;
 import com.prayerlaputa.mobiusrpc.demo.api.User;
 import com.prayerlaputa.mobiusrpc.demo.api.UserService;
 import com.prayerlaputa.mobiusrpc.core.annotation.MobiusConsumer;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 public class Demo2 {
     @MobiusConsumer
@@ -12,6 +14,6 @@ public class Demo2 {
 
     public void test() {
         User user = userService2.findById(100);
-        System.out.println(user);
+        log.info(user.toString());
     }
 }

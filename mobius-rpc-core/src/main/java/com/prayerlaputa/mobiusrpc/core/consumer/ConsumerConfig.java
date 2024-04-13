@@ -6,6 +6,7 @@ import com.prayerlaputa.mobiusrpc.core.api.Router;
 import com.prayerlaputa.mobiusrpc.core.cluster.RoundRibonLoadBalancer;
 import com.prayerlaputa.mobiusrpc.core.meta.InstanceMeta;
 import com.prayerlaputa.mobiusrpc.core.registry.ZkRegistryCenter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationRunner;
@@ -13,6 +14,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 
+@Slf4j
 @Configuration
 public class ConsumerConfig {
 
@@ -28,9 +30,9 @@ public class ConsumerConfig {
     @Order(Integer.MIN_VALUE)
     public ApplicationRunner consumerBootstrapRunner(@Autowired ConsumerBootstrap consumerBootstrap) {
         return x -> {
-            System.out.println("consumer bootstrap starting ...");
+            log.info("consumer bootstrap starting ...");
             consumerBootstrap.start();
-            System.out.println("consumer bootstrap started ...");
+            log.info("consumer bootstrap started ...");
         };
     }
 

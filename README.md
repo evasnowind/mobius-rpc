@@ -16,3 +16,8 @@ provider端的对象一般叫skeleton
 
 ### 2、consumer
 - 需要监听下线事件，以及时更新本地可用节点的缓存。
+
+# TODO
+- [] 扩展1：使用Spring registerBeanDefinitions注册bean
+- [] 扩展2：参考ScanPackagesUtils扫描类
+- [] 使用wrk等压测工具，进行压测。

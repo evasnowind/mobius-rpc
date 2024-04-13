@@ -9,6 +9,7 @@ import com.prayerlaputa.mobiusrpc.core.meta.InstanceMeta;
 import com.prayerlaputa.mobiusrpc.core.meta.ServiceMeta;
 import com.prayerlaputa.mobiusrpc.core.util.MethodUtils;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
 /**
  * 消费者启动类.
  */
+@Slf4j
 @Data
 public class ConsumerBootstrap implements ApplicationContextAware, EnvironmentAware {
 
@@ -59,7 +61,7 @@ public class ConsumerBootstrap implements ApplicationContextAware, EnvironmentAw
             List<Field> fields = MethodUtils.findAnnotatedField(bean.getClass(), MobiusConsumer.class);
             fields.forEach(
                     f -> {
-                        System.out.println(" ===> " + f.getName());
+                        log.info(" ===> " + f.getName());
                         Class<?> service = f.getType();
                         String serviceName = service.getCanonicalName();
                         Object consumer = stub.get(serviceName);
@@ -85,7 +87,7 @@ public class ConsumerBootstrap implements ApplicationContextAware, EnvironmentAw
                 .name(service.getCanonicalName())
                 .build();
         List<InstanceMeta> providers = rc.fetchAll(serviceMeta);
-        System.out.println(" ===> map to providers: ");
+        log.info(" ===> map to providers: ");
         providers.forEach(System.out::println);
 
         rc.subscribe(serviceMeta, event -> {
