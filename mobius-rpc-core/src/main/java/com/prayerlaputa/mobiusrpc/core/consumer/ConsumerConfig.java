@@ -6,6 +6,7 @@ import com.prayerlaputa.mobiusrpc.core.api.RegistryCenter;
 import com.prayerlaputa.mobiusrpc.core.api.Router;
 import com.prayerlaputa.mobiusrpc.core.cluster.RoundRibonLoadBalancer;
 import com.prayerlaputa.mobiusrpc.core.filter.CacheFilter;
+import com.prayerlaputa.mobiusrpc.core.filter.MockFilter;
 import com.prayerlaputa.mobiusrpc.core.meta.InstanceMeta;
 import com.prayerlaputa.mobiusrpc.core.registry.ZkRegistryCenter;
 import lombok.extern.slf4j.Slf4j;
@@ -59,5 +60,10 @@ public class ConsumerConfig {
     public Filter filter() {
         return new CacheFilter();
     }
+//
+//    @Bean
+//    public Filter filter2() {
+//        return new MockFilter();
+//    }
 
 }

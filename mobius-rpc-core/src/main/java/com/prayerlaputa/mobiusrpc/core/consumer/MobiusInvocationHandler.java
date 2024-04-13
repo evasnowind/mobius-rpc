@@ -58,6 +58,9 @@ public class MobiusInvocationHandler implements InvocationHandler {
         Object result = castReturnResult(method, rpcResponse);
 
         for (Filter filter : this.context.getFilters()) {
+            // 此处拿到的可能不是最终值，导致CacheFilter缓存的不是最终结果，有2种思路：
+            // 1、filter支持顺序，保证CacheFilter最后执行
+            // 2、拿到执行后结果result，CacheFilter可以不处理、仅返回result。下面即展示了这种思路。
             Object filterResult = filter.postfilter(rpcRequest, rpcResponse, result);
             if(filterResult != null) {
                 return filterResult;
